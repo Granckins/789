@@ -1,4 +1,5 @@
 ﻿
+using MihaZupan;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -22,9 +23,19 @@ namespace UberDeliveryBot.Models
 
             commandsList = new List<Command>();
             commandsList.Add(new HelloCommand());
+            commandsList.Add(new StartCommand());
             //TODO: Add more commands
+            // using MihaZupan;
 
-            client = new TelegramBotClient(AppSettings.Key);
+            var proxy = new HttpToSocks5Proxy("127.0.0.1", 1080);
+
+         
+
+            // Allows you to use proxies that are only allowing connections to Telegram
+            // Needed for some proxies
+            proxy.ResolveHostnamesLocally = true;
+            client = new TelegramBotClient(AppSettings.Key,    new HttpToSocks5Proxy("127.0.0.1", 9050));
+        
             var hook = string.Format(AppSettings.Url, "api/message/update");
             await client.SetWebhookAsync(hook);
 
